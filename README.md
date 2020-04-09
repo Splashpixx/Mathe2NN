@@ -20,6 +20,8 @@ Die Ausgabeschicht liegt hinter den Zwischenschichten und bildet die letzte Schi
 
 ## Arten
 ![alt text](https://jaai.de/wp-content/uploads/2017/09/neuralnetworks.png)
+#### Mehr dazu in der Wiki
+
 ## Compared to the human brain
 
 ## Quellen
