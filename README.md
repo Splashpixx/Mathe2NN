@@ -32,3 +32,4 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 
 - https://jaai.de/kuenstliche-neuronale-netze-aufbau-funktion-291/
 - https://www.datasciencelearner.com/category/probability/
+- https://www.cs.hs-rm.de/~panitz/prog3WS08/perceptron.pdf
