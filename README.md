@@ -3,7 +3,7 @@
 ## Basics
 
 ## Arten
-
+![alt text](https://jaai.de/wp-content/uploads/2017/09/neuralnetworks.png)
 ## Compared to the human brain
 
 ## Quellen
