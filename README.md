@@ -18,11 +18,15 @@ Theoretisch ist die Anzahl der möglichen verborgenen Schichten in einem künstl
 
 Die Ausgabeschicht liegt hinter den Zwischenschichten und bildet die letzte Schicht in einem künstlichen neuronalen Netzwerk. In der Ausgabeschicht angeordnete Neuronen sind jeweils mit allen Neuronen der letzten Zwischenschicht verbunden. Die Ausgabeschicht stellt den Endpunkt des Informationsflusses in einem künstlichen neuronalen Netz dar und enthält das Ergebnis der Informationsverarbeitung durch das Netzwerk.
 
+### Bias
+
+Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer Verbindung in einem neuronalen Netzwerk. Jedes Neuron vergibt dazu ein Gewicht für die durchfließende Information und gibt diese dann gewichtet und nach der Addition eines Wertes für die neuronen-spezifische Verzerrung (Bias) an die Neuronen der nächsten Schicht weiter. Üblicherweise werden die Gewichte und Verzerrungen zum Beginn des Trainings im Wertebereich zwischen -1 und 1 initialisiert, können jedoch später auch deutlich außerhalb dieses Bereichs liegen. Das Ergebnis der Gewichtung und Verzerrung wird oft durch eine sogenannte Aktivierungsfunktion (z.B: Sigmoid oder tanh) geleitet, bevor es an die Neuronen der nächsten Schicht weitergeleitet wird.
+
 ## Arten
 ![alt text](https://jaai.de/wp-content/uploads/2017/09/neuralnetworks.png)
 #### Mehr dazu in der Wiki
 
-## Compared to the human brain
+## The human brain
 
 ## Quellen
 
