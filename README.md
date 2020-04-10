@@ -24,7 +24,7 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 
 ## Arten
 ![alt text](https://jaai.de/wp-content/uploads/2017/09/neuralnetworks.png)
-#### Mehr dazu in der Wiki
+#### [Mehr dazu in der Wiki](https://github.com/Splashpixx/Mathe2NN/wiki#arten-von-neuronalen-netzen)
 
 ## Quellen
 
