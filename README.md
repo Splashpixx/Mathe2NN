@@ -26,8 +26,6 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 ![alt text](https://jaai.de/wp-content/uploads/2017/09/neuralnetworks.png)
 #### Mehr dazu in der Wiki
 
-## The human brain
-
 ## Quellen
 
 - https://jaai.de/kuenstliche-neuronale-netze-aufbau-funktion-291/
