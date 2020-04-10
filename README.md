@@ -33,3 +33,7 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 - https://www.cs.hs-rm.de/~panitz/prog3WS08/perceptron.pdf
 - http://yann.lecun.com/exdb/mnist/
 
+### Videos
+
+- https://www.youtube.com/watch?v=oJNHXPs0XDk
+
