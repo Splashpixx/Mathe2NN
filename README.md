@@ -40,7 +40,7 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 
 
 ### Frameworks für NN und Ai's
-[Tensorflow](https://www.tensorflow.org)
-[PyTorch](https://pytorch.org)
-[Keras](https://keras.io)
-[Accord.NET](http://accord-framework.net)
+[Tensorflow](https://www.tensorflow.org)  
+[PyTorch](https://pytorch.org)  
+[Keras](https://keras.io)   
+[Accord.NET](http://accord-framework.net)   
