@@ -36,4 +36,5 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 ### Videos
 
 - https://www.youtube.com/watch?v=oJNHXPs0XDk
+- https://www.youtube.com/user/shiffman
 
