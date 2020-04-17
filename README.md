@@ -37,7 +37,7 @@ Die Gewichte beschreiben die Intensität des Informationsflusses entlang einer V
 
 - https://www.youtube.com/watch?v=oJNHXPs0XDk
 - https://www.youtube.com/user/shiffman
-
+- https://www.youtube.com/watch?v=uSSDrFHNQvE
 
 ### Frameworks für NN und Ai's
 [Tensorflow](https://www.tensorflow.org)  
