@@ -3,13 +3,14 @@
 
 ## Abgaben
 
-| Meilenstein | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
+|  Art und Datum | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
 | :---         |     :---:      |    :---:      |    :---:      |    :---:      |
-|Di. 05.05 | | | |
-|Di. 26.05 | | | |
-|Di. 16.06 | | | |
-|Di. 30.06 | | | |
+|1.Meilenstein Di. 05.05 | x | | |
+|2.Meilenstein Di. 26.05 | x | | |
+|Präsentation 16.06 | x | | |
+|Probeklausur Di. 30.06 | x | | |
 
+[Abgabe Termine PFD](https://ilias.th-koeln.de/goto.php?target=file_1496380_download&client_id=ILIAS_FH_Koeln)
 ## Basics
 
 ### Eingabeschicht
