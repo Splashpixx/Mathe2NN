@@ -1,5 +1,15 @@
 ![alt text](https://i.ibb.co/SQPgRqt/mathe2NN.png)
 
+
+## Abgaben
+
+| Meilenstein | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
+| :---         |     :---:      |    :---:      |    :---:      |    :---:      |
+|Di. 05.05 | | | |
+|Di. 26.05 | | | |
+|Di. 16.06 | | | |
+|Di. 30.06 | | | |
+
 ## Basics
 
 ### Eingabeschicht
