@@ -26,7 +26,7 @@
 - Abreitsmatrix erstellt und aufgeteilt
 - GitHub zum organisieren und strukturieren des porjekts, Overleave zum schreiben der Arbeit
 ### 27.04
--
+- Besprechung der zugeteilten Themen
 ### 30.04
 -
 
