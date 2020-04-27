@@ -13,6 +13,23 @@
 [Meilenstein Beschreibung](https://ilias.th-koeln.de/goto.php?target=file_1479903_download&client_id=ILIAS_FH_Koeln)  
 [Projektblatt](https://ilias.th-koeln.de/goto.php?target=file_1478948_download&client_id=ILIAS_FH_Koeln)  
 [Abgabe Termine PFD](https://ilias.th-koeln.de/goto.php?target=file_1496380_download&client_id=ILIAS_FH_Koeln)
+
+## Projekttagebuch 
+### 22.04
+- Erstes Zusammentreffen der Gruppe, Besprechen örganisatiorischer sachen
+### 23.04
+- Strukurieren des Projekts
+  - Erstellen einer Midmap
+  - was ist zu bearbeiten
+  - was sind unsere Ziele / interessen
+  - Terminplanung, wann treffen wir uns (Mo/Do 16.30)
+- Abreitsmatrix erstellt und aufgeteilt
+- GitHub zum organisieren und strukturieren des porjekts, Overleave zum schreiben der Arbeit
+### 27.04
+-
+### 30.04
+-
+
 ## Basics
 
 ### Eingabeschicht
