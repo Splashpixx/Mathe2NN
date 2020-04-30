@@ -28,7 +28,10 @@
 ### 27.04
 - Besprechung der zugeteilten Themen
 ### 30.04
--
+- Projectplan angepasst
+- Fragen gesammelt 
+  - Seitenanzahl der Doku.
+
 
 ## Basics
 
