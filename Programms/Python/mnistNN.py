@@ -58,50 +58,68 @@ else:
 
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-lastX, lastY = 0, 0
-line_width = 20
-
 
 class Gui:
     def __init__(self, model):
         self.model = model
+
         self.root = tk.Tk()
+        self.canvas = tk.Canvas(self.root)
+        self.result_label = self.canvas.create_text(200, 100, text="Nothing drawn yet", tags='gui')
+
+        self.init_graphics()
+        self.last_x = 0
+        self.last_y = 0
+        self.min_x = 0
+        self.min_y = 0
+        self.max_x = 0
+        self.max_y = 0
+        self.NN_input = None
+        self.image = None
+        self.blown_NN_input = None
+        self.line_width = 20
+        self.update()
+
+    def init_graphics(self):
         self.root.geometry("800x800")
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        self.canvas = tk.Canvas(self.root)
         self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.canvas.bind("<Button-1>", self.xy)
         self.canvas.bind("<B1-Motion>", self.add_line)
         self.canvas.bind("<ButtonRelease-1>", lambda event: self.evaluate())
-        self.result_label = self.canvas.create_text(200, 100, text="Nothing drawn yet", tags='gui')
         self.root.bind("+", lambda event: self.line_width_increase())
         self.root.bind("-", lambda event: self.line_width_decrease())
         self.root.bind("<Escape>", lambda event: self.end_program())
         self.root.bind("<Return>", lambda event: self.show_internals())
         self.root.bind("<BackSpace>", lambda event: self.delete_current_drawing())
 
-    def add_canvas(self, canvas):
-        self.canvas = canvas
-
     def xy(self, event):
         """Takes the coordinates of the mouse when you click the mouse"""
-        global lastX, lastY
-        lastX, lastY = event.x, event.y
+        self.last_x, self.last_y = event.x, event.y
 
     def add_line(self, event):
         """Creates a line when you drag the mouse
         from the point where you clicked the mouse to where the mouse is now"""
-        global lastX, lastY
-        self.canvas.create_line(lastX, lastY, event.x, event.y, width=line_width, tags='drawing')
+        self.canvas.create_line(self.last_x, self.last_y, event.x, event.y, width=self.line_width, tags='drawing')
         # this makes the new starting point of the drawing
-        lastX, lastY = event.x, event.y
+        self.last_x, self.last_y = event.x, event.y
+
+    def update(self):
+        self.get_pil_image()
+        self.find_number_rectangle()
+        if self.max_x != 0:
+            self.input_transform()
+            width = self.max_x - self.min_x
+            height = self.max_y - self.min_y
+            im = self.NN_input.resize((int(width*1.4), int(height*1.4)))
+            self.blown_NN_input = ImageTk.PhotoImage(im)
 
     def evaluate(self):
         """Uses the NN to guess the currently drawn number and updates the result_label accordingly"""
-        im = self.input_transform()
         # feed image into NN
-        array = np.asarray(im)
+        self.update()
+        array = np.asarray(self.NN_input)
         array = 255 - array  # invert image - Pillow and MNIST don't agree whether 0 is white or black
         fake_batch = np.array([array])
         prediction = model.predict(fake_batch)
@@ -114,12 +132,10 @@ class Gui:
         print("certainty: ", certainty, "%")
 
     def input_transform(self):
-        im = self.get_pil_image()
-        max_x, max_y, min_x, min_y = self.find_number_rectangle(im)
-        x_size = max_x - min_x + 1  # both ends inclusive => +1
-        y_size = max_y - min_y + 1
+        x_size = self.max_x - self.min_x + 1  # both ends inclusive => +1
+        y_size = self.max_y - self.min_y + 1
         # crop number down to 20x<20 or <20x20, whichever is possible while conserving aspect ratio
-        im = im.crop((min_x, min_y, max_x, max_y))
+        im = self.image.crop((self.min_x, self.min_y, self.max_x, self.max_y))
         if x_size > y_size:
             im = im.resize((20, math.ceil(20 * y_size / x_size)))
         else:
@@ -136,7 +152,7 @@ class Gui:
         blank = Image.new("L", (28, 28), color=255)
         blank.paste(im, (horizontal_offset, vertical_offset))
         im = blank
-        return im
+        self.NN_input = im
 
     def get_pil_image(self):
         gui_ids = self.canvas.find_withtag("gui")
@@ -145,29 +161,27 @@ class Gui:
         self.canvas.itemconfig(gui_ids, fill="black")
         im = Image.open(io.BytesIO(postscript.encode('utf-8')))
         im = im.convert(mode='L')
-        return im
+        self.image = im
 
-    def find_number_rectangle(self, im):
-        array = np.asarray(im)
+    def find_number_rectangle(self):
+        array = np.asarray(self.image)
         # find section with number
         array = array - 255  # 255 == code for white
         rows, cols = np.nonzero(array)
-        min_x = cols.min()
-        max_x = cols.max()
-        min_y = rows.min()
-        max_y = rows.max()
-        return max_x, max_y, min_x, min_y
+        if rows.shape != (0,):
+            self.min_x = cols.min()
+            self.max_x = cols.max()
+            self.min_y = rows.min()
+            self.max_y = rows.max()
 
     def line_width_increase(self):
         """increases line width by 5"""
-        global line_width
-        line_width = line_width + 5
+        self.line_width += 5
 
     def line_width_decrease(self):
         """decreases line width by 5, but never below 5"""
-        global line_width
-        if line_width > 5:
-            line_width -= 5
+        if self.line_width > 5:
+            self.line_width -= 5
 
     def delete_current_drawing(self):
         """deletes everything tagged 'drawing'"""
@@ -180,12 +194,7 @@ class Gui:
 
     def show_internals(self):
         print("show_internals")
-        max_x, max_y, min_x, min_y = self.find_number_rectangle(self.get_pil_image())
-        im = self.input_transform()
-        width = max_x - min_x
-        height = max_y - min_y
-        im = im.resize((width, height))
-        self.canvas.create_image(min_x, min_y, anchor=NW, image=im)
+        self.canvas.create_image(self.min_x, self.min_y, anchor=NW, image=self.blown_NN_input, tags="drawing")
 
     def start(self):
         self.root.mainloop()
