@@ -65,6 +65,21 @@ line_width = 20
 class Gui:
     def __init__(self, model):
         self.model = model
+        self.root = tk.Tk()
+        self.root.geometry("800x800")
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+        self.canvas = tk.Canvas(self.root)
+        self.canvas.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self.canvas.bind("<Button-1>", self.xy)
+        self.canvas.bind("<B1-Motion>", self.add_line)
+        self.canvas.bind("<ButtonRelease-1>", lambda event: self.evaluate())
+        self.result_label = self.canvas.create_text(200, 100, text="Nothing drawn yet", tags='gui')
+        self.root.bind("+", lambda event: self.line_width_increase())
+        self.root.bind("-", lambda event: self.line_width_decrease())
+        self.root.bind("<Escape>", lambda event: self.end_program())
+        self.root.bind("<Return>", lambda event: self.show_internals())
+        self.root.bind("<BackSpace>", lambda event: self.delete_current_drawing())
 
     def add_canvas(self, canvas):
         self.canvas = canvas
@@ -78,7 +93,7 @@ class Gui:
         """Creates a line when you drag the mouse
         from the point where you clicked the mouse to where the mouse is now"""
         global lastX, lastY
-        canvas.create_line(lastX, lastY, event.x, event.y, width=line_width, tags='drawing')
+        self.canvas.create_line(lastX, lastY, event.x, event.y, width=line_width, tags='drawing')
         # this makes the new starting point of the drawing
         lastX, lastY = event.x, event.y
 
@@ -94,7 +109,7 @@ class Gui:
         result = np.argmax(prediction)
         certainty = 100 * np.max(prediction)
         certainty_string = format(certainty, '.2f')
-        canvas.itemconfig(result_label, text=('' + str(result) + ' (' + str(certainty_string) + '%)'))
+        self.canvas.itemconfig(self.result_label, text=('' + str(result) + ' (' + str(certainty_string) + '%)'))
         print("result: ", result)
         print("certainty: ", certainty, "%")
 
@@ -124,10 +139,10 @@ class Gui:
         return im
 
     def get_pil_image(self):
-        gui_ids = canvas.find_withtag("gui")
-        canvas.itemconfig(gui_ids, fill="white")
-        postscript = canvas.postscript(colormode='gray')
-        canvas.itemconfig(gui_ids, fill="black")
+        gui_ids = self.canvas.find_withtag("gui")
+        self.canvas.itemconfig(gui_ids, fill="white")
+        postscript = self.canvas.postscript(colormode='gray')
+        self.canvas.itemconfig(gui_ids, fill="black")
         im = Image.open(io.BytesIO(postscript.encode('utf-8')))
         im = im.convert(mode='L')
         return im
@@ -156,7 +171,7 @@ class Gui:
 
     def delete_current_drawing(self):
         """deletes everything tagged 'drawing'"""
-        canvas.delete('drawing')
+        self.canvas.delete('drawing')
         print("delete_current_drawing")
 
     def end_program(self):
@@ -170,27 +185,13 @@ class Gui:
         width = max_x - min_x
         height = max_y - min_y
         im = im.resize((width, height))
-        canvas.create_image(min_x, min_y, anchor=NW, image=im)
+        self.canvas.create_image(min_x, min_y, anchor=NW, image=im)
+
+    def start(self):
+        self.root.mainloop()
 
 
-root = tk.Tk()
-root.geometry("800x800")
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
 gui = Gui(model)
-canvas = tk.Canvas(root)
-canvas.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
-canvas.bind("<Button-1>", gui.xy)
-# canvas.bind("<Button-1>", lambda event, a=10, b=20, c=30: print(a + b + c))
-canvas.bind("<B1-Motion>", gui.add_line)
-canvas.bind("<ButtonRelease-1>", lambda event: gui.evaluate())
-result_label = canvas.create_text(200, 100, text="Nothing drawn yet", tags='gui')
-gui.add_canvas(canvas)
-root.bind("+", lambda event: gui.line_width_increase())
-root.bind("-", lambda event: gui.line_width_decrease())
-root.bind("<Escape>", lambda event: gui.end_program())
-root.bind("<Return>", lambda event: gui.show_internals())
-root.bind("<BackSpace>", lambda event: gui.delete_current_drawing())
+gui.start()
 
-root.mainloop()
 exit(0)
