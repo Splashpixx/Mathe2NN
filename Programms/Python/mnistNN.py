@@ -1,4 +1,4 @@
-from tkinter import NE, NW
+from tkinter import NE, NW, SE
 
 import tensorflow as tf
 from tensorflow import keras
@@ -59,6 +59,11 @@ else:
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
+def end_program():
+    """ends the program"""
+    exit(0)
+
+
 class Gui:
     def __init__(self, model):
         self.model = model
@@ -90,7 +95,7 @@ class Gui:
         self.canvas.bind("<ButtonRelease-1>", lambda event: self.evaluate())
         self.root.bind("+", lambda event: self.line_width_increase())
         self.root.bind("-", lambda event: self.line_width_decrease())
-        self.root.bind("<Escape>", lambda event: self.end_program())
+        self.root.bind("<Escape>", lambda event: end_program())
         self.root.bind("<Return>", lambda event: self.show_internals())
         self.root.bind("<BackSpace>", lambda event: self.delete_current_drawing())
 
@@ -110,10 +115,6 @@ class Gui:
         self.find_number_rectangle()
         if self.max_x != 0:
             self.input_transform()
-            width = self.max_x - self.min_x
-            height = self.max_y - self.min_y
-            im = self.NN_input.resize((int(width*1.4), int(height*1.4)))
-            self.blown_NN_input = ImageTk.PhotoImage(im)
 
     def evaluate(self):
         """Uses the NN to guess the currently drawn number and updates the result_label accordingly"""
@@ -140,6 +141,8 @@ class Gui:
             im = im.resize((20, math.ceil(20 * y_size / x_size)))
         else:
             im = im.resize((math.ceil(20 * x_size / y_size), 20))
+        image_for_report = im.resize((x_size, y_size))
+        self.blown_NN_input = ImageTk.PhotoImage(image_for_report)
         # find center of mass (COM) of the number
         array = np.asarray(im)
         array = 255 - array  # invert image, library searches for COM of white
@@ -188,13 +191,9 @@ class Gui:
         self.canvas.delete('drawing')
         print("delete_current_drawing")
 
-    def end_program(self):
-        """ends the program"""
-        exit(0)
-
     def show_internals(self):
         print("show_internals")
-        self.canvas.create_image(self.min_x, self.min_y, anchor=NW, image=self.blown_NN_input, tags="drawing")
+        self.canvas.create_image(self.root.winfo_width() - 200, 100, anchor=NE, image=self.blown_NN_input, tags="drawing")
 
     def start(self):
         self.root.mainloop()
