@@ -86,6 +86,7 @@ class Gui:
         self.update()
 
     def init_graphics(self):
+        """creates the window and key/mouse binds"""
         self.root.geometry("800x800")
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
@@ -111,6 +112,7 @@ class Gui:
         self.last_x, self.last_y = event.x, event.y
 
     def update(self):
+        """updates the various saved images"""
         self.get_pil_image()
         self.find_number_rectangle()
         if self.max_x != 0:
@@ -133,6 +135,7 @@ class Gui:
         print("certainty: ", certainty, "%")
 
     def input_transform(self):
+        """updates self.NN_input and self.blown_NN_input from self.image"""
         x_size = self.max_x - self.min_x + 1  # both ends inclusive => +1
         y_size = self.max_y - self.min_y + 1
         # crop number down to 20x<20 or <20x20, whichever is possible while conserving aspect ratio
@@ -158,6 +161,7 @@ class Gui:
         self.NN_input = im
 
     def get_pil_image(self):
+        """updates self.image to the current drawing on the canvas"""
         gui_ids = self.canvas.find_withtag("gui")
         self.canvas.itemconfig(gui_ids, fill="white")
         postscript = self.canvas.postscript(colormode='gray')
@@ -167,6 +171,7 @@ class Gui:
         self.image = im
 
     def find_number_rectangle(self):
+        """updates self.min/max_x/y"""
         array = np.asarray(self.image)
         # find section with number
         array = array - 255  # 255 == code for white
@@ -193,9 +198,10 @@ class Gui:
 
     def show_internals(self):
         print("show_internals")
-        self.canvas.create_image(self.root.winfo_width() - 200, 100, anchor=NE, image=self.blown_NN_input, tags="drawing")
+        self.canvas.create_image(self.root.winfo_width() - 200, 100, anchor=NE, image=self.blown_NN_input, tags="gui")
 
     def start(self):
+        """starts the tkinter mainloop"""
         self.root.mainloop()
 
 
