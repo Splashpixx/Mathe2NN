@@ -79,10 +79,12 @@ class Gui:
         self.min_y = 0
         self.max_x = 0
         self.max_y = 0
+        self.center_x = 0
+        self.center_y = 0
         self.NN_input = None
         self.image = None
-        self.blown_NN_input = None
         self.line_width = 20
+        self.showing_internals = False
         self.update()
 
     def init_graphics(self):
@@ -115,8 +117,10 @@ class Gui:
         """updates the various saved images"""
         self.get_pil_image()
         self.find_number_rectangle()
-        if self.max_x != 0:
+        if self.max_x != 0:  # has something been drawn?
             self.input_transform()
+        else:
+            self.NN_input = Image.new("L", (28, 28), color=255)
 
     def evaluate(self):
         """Uses the NN to guess the currently drawn number and updates the result_label accordingly"""
@@ -138,14 +142,16 @@ class Gui:
         """updates self.NN_input and self.blown_NN_input from self.image"""
         x_size = self.max_x - self.min_x + 1  # both ends inclusive => +1
         y_size = self.max_y - self.min_y + 1
+        array = np.asarray(self.image)
+        array = 255 - array  # invert image, library searches for COM of white
+        self.center_y, self.center_x = ndimage.measurements.center_of_mass(array)  # yes, library returns a (y, x) tuple
+
         # crop number down to 20x<20 or <20x20, whichever is possible while conserving aspect ratio
         im = self.image.crop((self.min_x, self.min_y, self.max_x, self.max_y))
         if x_size > y_size:
             im = im.resize((20, math.ceil(20 * y_size / x_size)))
         else:
             im = im.resize((math.ceil(20 * x_size / y_size), 20))
-        image_for_report = im.resize((x_size, y_size))
-        self.blown_NN_input = ImageTk.PhotoImage(image_for_report)
         # find center of mass (COM) of the number
         array = np.asarray(im)
         array = 255 - array  # invert image, library searches for COM of white
@@ -163,6 +169,7 @@ class Gui:
     def get_pil_image(self):
         """updates self.image to the current drawing on the canvas"""
         gui_ids = self.canvas.find_withtag("gui")
+        self.canvas.delete("generated")
         self.canvas.itemconfig(gui_ids, fill="white")
         postscript = self.canvas.postscript(colormode='gray')
         self.canvas.itemconfig(gui_ids, fill="black")
@@ -192,13 +199,20 @@ class Gui:
             self.line_width -= 5
 
     def delete_current_drawing(self):
-        """deletes everything tagged 'drawing'"""
+        """deletes everything tagged 'drawing' or 'generated"""
         self.canvas.delete('drawing')
-        print("delete_current_drawing")
+        self.canvas.delete('generated')
 
     def show_internals(self):
-        print("show_internals")
-        self.canvas.create_image(self.root.winfo_width() - 200, 100, anchor=NE, image=self.blown_NN_input, tags="gui")
+        if self.showing_internals:
+            self.canvas.delete("generated")
+            self.showing_internals = False
+        else:
+            self.canvas.delete("generated")
+            self.canvas.internals_image = ImageTk.PhotoImage(self.NN_input.resize((400, 400)))
+            self.canvas.create_image(self.canvas.winfo_width() - 100, 100, anchor=NE, image=self.canvas.internals_image,
+                                     tags="generated")
+            self.showing_internals = True
 
     def start(self):
         """starts the tkinter mainloop"""
