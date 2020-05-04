@@ -2,6 +2,7 @@
   <dictionary name="ben">
     <words>
       <w>mnist</w>
+      <w>preprocessing</w>
     </words>
   </dictionary>
 </component>

@@ -1,4 +1,4 @@
-from tkinter import NE, NW, SE
+from tkinter import NE
 
 import tensorflow as tf
 from tensorflow import keras
@@ -65,8 +65,8 @@ def end_program():
 
 
 class Gui:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, predictions_model):
+        self.model = predictions_model
 
         self.root = tk.Tk()
         self.canvas = tk.Canvas(self.root)
@@ -142,10 +142,6 @@ class Gui:
         """updates self.NN_input and self.blown_NN_input from self.image"""
         x_size = self.max_x - self.min_x + 1  # both ends inclusive => +1
         y_size = self.max_y - self.min_y + 1
-        array = np.asarray(self.image)
-        array = 255 - array  # invert image, library searches for COM of white
-        self.center_y, self.center_x = ndimage.measurements.center_of_mass(array)  # yes, library returns a (y, x) tuple
-
         # crop number down to 20x<20 or <20x20, whichever is possible while conserving aspect ratio
         im = self.image.crop((self.min_x, self.min_y, self.max_x, self.max_y))
         if x_size > y_size:
