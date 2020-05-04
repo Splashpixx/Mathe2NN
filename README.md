@@ -1,6 +1,6 @@
 ![alt text](https://i.ibb.co/SQPgRqt/mathe2NN.png)
 
-
+- https://www.youtube.com/watch?v=DPGWSZR6vmA | Corona und AI |
 ## Abgaben
 
 |  Art und Datum | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
