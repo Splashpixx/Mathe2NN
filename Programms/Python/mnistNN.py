@@ -79,8 +79,6 @@ class Gui:
         self.min_y = 0
         self.max_x = 0
         self.max_y = 0
-        self.center_x = 0
-        self.center_y = 0
         self.NN_input = None
         self.image = None
         self.line_width = 20
