@@ -32,6 +32,9 @@
 - Fragen gesammelt 
   - Seitenanzahl der Doku.
 ### 04.05
+- Fragen Sammeln
+### 05.05
+
 
 
 ## Basics
