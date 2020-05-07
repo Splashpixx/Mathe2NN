@@ -27,11 +27,6 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 nn = NN(name="firstNN", model=model, train_epoch=10)
 gui.add_model(nn)
 
@@ -42,11 +37,6 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 nn = NN(name="noHidden", model=model, train_epoch=10)
 gui.add_model(nn)
 
@@ -56,10 +46,6 @@ model = keras.Sequential([
     keras.layers.Dense(10),  # output layer (1 node = 1 class)
     keras.layers.Softmax()  # visual presentation
 ])
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
 nn = NN(name="singleConnect", model=model, train_epoch=10)
 gui.add_model(nn)
 
@@ -70,11 +56,6 @@ model = keras.Sequential([
     keras.layers.Dense(10),  # output layer (1 node = 1 class)
     keras.layers.Softmax()  # visual presentation
 ])
-
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
 
 nn = NN(name="firstNNnoDropout", model=model, train_epoch=10)
 gui.add_model(nn)
@@ -87,11 +68,6 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 nn = NN(name="tenConnect", model=model, train_epoch=10)
 gui.add_model(nn)
 
@@ -103,11 +79,6 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 nn = NN(name="large2nd", model=model, train_epoch=10)
 gui.add_model(nn)
 # creating the nn
@@ -118,11 +89,6 @@ model = keras.Sequential([
     keras.layers.Dense(10),  # output layer (1 node = 1 class)
     keras.layers.Softmax()  # visual presentation
 ])
-
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
 
 nn = NN(name="firstNN100Epoch", model=model, train_epoch=100)
 gui.add_model(nn)
@@ -144,11 +110,6 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
 nn = NN(name="tenLayers", model=model, train_epoch=10)
 gui.add_model(nn)
 
@@ -160,11 +121,6 @@ model = keras.Sequential([
     keras.layers.Dense(10),  # output layer (1 node = 1 class)
     keras.layers.Softmax()  # visual presentation
 ])
-
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
 
 nn = NN(name="oneEpoch", model=model, train_epoch=1)
 gui.add_model(nn)

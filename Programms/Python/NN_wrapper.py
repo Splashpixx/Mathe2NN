@@ -5,10 +5,15 @@ import numpy as np
 
 from mnistNN import save_path, test_data, test_labels, train_data, train_labels
 import tensorflow as tf
+from tensorflow import keras
 
 
 class NN:
-    def __init__(self, model, name="default_name", train_epoch=20):
+    def __init__(self, model, name="default_name", train_epoch=20, optimizer=keras.optimizers.Adam,
+                 loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy']):
+        self.metrics = metrics
+        self.loss = loss
+        self.optimizer = optimizer
         self.name = name
         self.train_epoch = train_epoch
         self.training_time = time.time()
@@ -18,6 +23,7 @@ class NN:
             self.training_time = None
         else:
             self.model = model
+            model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
             self.train()
             self.training_time = time.time() - self.training_time
         loss, self.accuracy = model.evaluate(test_data, test_labels, verbose=2)
