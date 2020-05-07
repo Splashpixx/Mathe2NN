@@ -15,46 +15,41 @@ import math
 print(sys.version)
 print(tf.__version__)
 
-save_path = 'permanency/models'
-model = None
-if path.isdir(save_path):
-    # loading model
-    model = tf.keras.models.load_model(save_path)
-else:
-    # create new model
+save_path = 'permanency/models/'
+# create new model
 
-    mnist = keras.datasets.mnist
+mnist = keras.datasets.mnist
 
-    (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
+(train_data, train_labels), (test_data, test_labels) = mnist.load_data()
 
-    # preprocessing to get everything between 0 and 1
-    train_data = train_data / 255.0
-    test_data = test_data / 255.0
+# preprocessing to get everything between 0 and 1
+train_data = train_data / 255.0
+test_data = test_data / 255.0
 
-    # creating the nn
-    model = keras.Sequential([
-        keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
-        keras.layers.Dropout(rate=0.5),
-        keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
-        keras.layers.Dense(10),  # output layer (1 node = 1 class)
-        keras.layers.Softmax()  # visual presentation
-    ])
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dropout(rate=0.5),
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
 
-    # compiling the nn
-    model.compile(optimizer='adam',
-                  loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                  metrics=['accuracy'])
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
 
-    # training the model
-    model.fit(train_data, train_labels, epochs=20)  # epochs = number of iterations
+# training the model
+model.fit(train_data, train_labels, epochs=20)  # epochs = number of iterations
 
-    # verifying model
-    test_loss, test_acc = model.evaluate(test_data, test_labels, verbose=2)
+# verifying model
+test_loss, test_acc = model.evaluate(test_data, test_labels, verbose=2)
 
-    # save model
-    model.save(save_path)
+# save model
+model.save(save_path)
 
-    print('\nVerification accuracy:', test_acc)
+print('\nVerification accuracy:', test_acc)
 
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
@@ -62,6 +57,36 @@ class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 def end_program():
     """ends the program"""
     exit(0)
+
+
+class NN:
+    def __init__(self, name, nn, train_epoch):
+        self.name = name
+        self.accuracy_history = []
+        self.train_epoch = train_epoch
+        if path.isdir(save_path+name):
+            print("Loaded NN " + name + " from memory, not retrained")
+            self.model = tf.keras.models.load_model(save_path+name)
+        else:
+            self.model = nn
+            self.train()
+
+    def predict(self, array):
+        fake_batch = np.array([array])
+        prediction = self.model.predict(fake_batch)
+        return np.argmax(prediction)
+
+    def append_history(self, accuracy):
+        self.accuracy_history.append(accuracy)
+
+    def report_accuracy(self):
+        acc = np.nonzero(self.accuracy_history)
+        acc_value = len(acc) / len(self.accuracy_history)
+        return int(acc_value * 100)
+
+    def train(self):
+        self.model.fit(train_data, train_labels, epochs=self.train_epoch)  # epochs = number of iterations
+        model.evaluate(test_data, test_labels, verbose=2)
 
 
 class Gui:
@@ -99,6 +124,8 @@ class Gui:
         self.root.bind("<Escape>", lambda event: end_program())
         self.root.bind("<Return>", lambda event: self.show_internals())
         self.root.bind("<BackSpace>", lambda event: self.delete_current_drawing())
+        print("Keybinds:\nDrawing: drag with left mouse click\nIn/Decrease linewidth: +/-\nDelete drawing: "
+              "Backspace\nShow internal picture: Enter\nEnd program: Escape")
 
     def xy(self, event):
         """Takes the coordinates of the mouse when you click the mouse"""
