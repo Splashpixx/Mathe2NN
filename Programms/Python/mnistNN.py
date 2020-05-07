@@ -15,44 +15,6 @@ import math
 print(sys.version)
 print(tf.__version__)
 
-save_path = 'permanency/models/'
-# create new model
-
-mnist = keras.datasets.mnist
-
-(train_data, train_labels), (test_data, test_labels) = mnist.load_data()
-
-# preprocessing to get everything between 0 and 1
-train_data = train_data / 255.0
-test_data = test_data / 255.0
-
-# creating the nn
-model = keras.Sequential([
-    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
-    keras.layers.Dropout(rate=0.5),
-    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
-    keras.layers.Dense(10),  # output layer (1 node = 1 class)
-    keras.layers.Softmax()  # visual presentation
-])
-
-# compiling the nn
-model.compile(optimizer='adam',
-              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-
-# training the model
-model.fit(train_data, train_labels, epochs=20)  # epochs = number of iterations
-
-# verifying model
-test_loss, test_acc = model.evaluate(test_data, test_labels, verbose=2)
-
-# save model
-model.save(save_path)
-
-print('\nVerification accuracy:', test_acc)
-
-class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-
 
 def end_program():
     """ends the program"""
@@ -60,15 +22,14 @@ def end_program():
 
 
 class NN:
-    def __init__(self, name, nn, train_epoch):
+    def __init__(self, model, name="default_name", train_epoch=20):
         self.name = name
-        self.accuracy_history = []
         self.train_epoch = train_epoch
-        if path.isdir(save_path+name):
+        if path.isdir(save_path + name):
             print("Loaded NN " + name + " from memory, not retrained")
-            self.model = tf.keras.models.load_model(save_path+name)
+            self.model = tf.keras.models.load_model(save_path + name)
         else:
-            self.model = nn
+            self.model = model
             self.train()
 
     def predict(self, array):
@@ -76,26 +37,19 @@ class NN:
         prediction = self.model.predict(fake_batch)
         return np.argmax(prediction)
 
-    def append_history(self, accuracy):
-        self.accuracy_history.append(accuracy)
-
-    def report_accuracy(self):
-        acc = np.nonzero(self.accuracy_history)
-        acc_value = len(acc) / len(self.accuracy_history)
-        return int(acc_value * 100)
-
     def train(self):
         self.model.fit(train_data, train_labels, epochs=self.train_epoch)  # epochs = number of iterations
         model.evaluate(test_data, test_labels, verbose=2)
+        model.save(save_path + self.name)
 
 
 class Gui:
-    def __init__(self, predictions_model):
-        self.model = predictions_model
+    def __init__(self):
+        self.models = []
+        self.labels = []
 
         self.root = tk.Tk()
         self.canvas = tk.Canvas(self.root)
-        self.result_label = self.canvas.create_text(200, 100, text="Nothing drawn yet", tags='gui')
 
         self.init_graphics()
         self.last_x = 0
@@ -108,7 +62,13 @@ class Gui:
         self.image = None
         self.line_width = 20
         self.showing_internals = False
-        self.update()
+
+    def add_model(self, model):
+        self.models.append(model)
+        self.canvas.delete("gui")
+        self.labels = []
+        for i in range(len(self.models)):
+            self.labels.append(self.canvas.create_text(100, 100 + i * 50, text=self.models[i].name + ":/", tags="gui"))
 
     def init_graphics(self):
         """creates the window and key/mouse binds"""
@@ -153,15 +113,23 @@ class Gui:
         self.update()
         array = np.asarray(self.NN_input)
         array = 255 - array  # invert image - Pillow and MNIST don't agree whether 0 is white or black
-        fake_batch = np.array([array])
-        prediction = model.predict(fake_batch)
-        # update label to show new recognised number
-        result = np.argmax(prediction)
-        certainty = 100 * np.max(prediction)
-        certainty_string = format(certainty, '.2f')
-        self.canvas.itemconfig(self.result_label, text=('' + str(result) + ' (' + str(certainty_string) + '%)'))
-        print("result: ", result)
-        print("certainty: ", certainty, "%")
+        predictions = []
+        numbers = np.zeros(10)
+        most_frequent = 0
+        for i in range(len(self.models)):
+            predicted = self.models[i].predict(array)
+            predictions.append(predicted)
+            numbers[predicted] += 1
+            if numbers[predicted] > numbers[most_frequent]:
+                most_frequent = predicted
+
+        # update labels to show new recognised number
+        for i in range(len(self.models)):
+            if predictions[i] == most_frequent:
+                self.canvas.itemconfig(self.labels[i], text=self.models[i].name + ": " + str(most_frequent),
+                                       fill="green")
+            else:
+                self.canvas.itemconfig(self.labels[i], text=self.models[i].name + ": " + str(most_frequent), fill="red")
 
     def input_transform(self):
         """updates self.NN_input and self.blown_NN_input from self.image"""
@@ -191,9 +159,10 @@ class Gui:
         """updates self.image to the current drawing on the canvas"""
         gui_ids = self.canvas.find_withtag("gui")
         self.canvas.delete("generated")
-        self.canvas.itemconfig(gui_ids, fill="white")
+        for i in range(len(gui_ids)):
+            self.canvas.itemconfig(gui_ids[i], fill="white")
         postscript = self.canvas.postscript(colormode='gray')
-        self.canvas.itemconfig(gui_ids, fill="black")
+        # self.canvas.itemconfig(gui_ids, fill="black")
         im = Image.open(io.BytesIO(postscript.encode('utf-8')))
         im = im.convert(mode='L')
         self.image = im
@@ -223,6 +192,7 @@ class Gui:
         """deletes everything tagged 'drawing' or 'generated"""
         self.canvas.delete('drawing')
         self.canvas.delete('generated')
+        self.showing_internals = False
 
     def show_internals(self):
         if self.showing_internals:
@@ -240,7 +210,51 @@ class Gui:
         self.root.mainloop()
 
 
-gui = Gui(model)
+save_path = 'permanency/models/'
+gui = Gui()
+mnist = keras.datasets.mnist
+
+(train_data, train_labels), (test_data, test_labels) = mnist.load_data()
+
+# preprocessing to get everything between 0 and 1
+train_data = train_data / 255.0
+test_data = test_data / 255.0
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dropout(rate=0.5),
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="firstNN", model=model, train_epoch=20)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="noHidden", model=model, train_epoch=20)
+gui.add_model(nn)
+
+class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+
 gui.start()
 
 exit(0)
