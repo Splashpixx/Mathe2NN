@@ -1,4 +1,4 @@
-from tkinter import NE
+from tkinter import NE, NW
 
 import tensorflow as tf
 from tensorflow import keras
@@ -31,6 +31,8 @@ class NN:
         else:
             self.model = model
             self.train()
+        loss, self.accuracy = model.evaluate(test_data, test_labels, verbose=2)
+        model.save(save_path + self.name)
 
     def predict(self, array):
         fake_batch = np.array([array])
@@ -39,8 +41,6 @@ class NN:
 
     def train(self):
         self.model.fit(train_data, train_labels, epochs=self.train_epoch)  # epochs = number of iterations
-        model.evaluate(test_data, test_labels, verbose=2)
-        model.save(save_path + self.name)
 
 
 class Gui:
@@ -68,7 +68,7 @@ class Gui:
         self.canvas.delete("gui")
         self.labels = []
         for i in range(len(self.models)):
-            self.labels.append(self.canvas.create_text(100, 100 + i * 50, text=self.models[i].name + ":/", tags="gui"))
+            self.labels.append(self.canvas.create_text(10, 100 + i * 50, anchor=NW, text=self.models[i].name + ":/", tags="gui"))
 
     def init_graphics(self):
         """creates the window and key/mouse binds"""
@@ -129,7 +129,7 @@ class Gui:
                 self.canvas.itemconfig(self.labels[i], text=self.models[i].name + ": " + str(most_frequent),
                                        fill="green")
             else:
-                self.canvas.itemconfig(self.labels[i], text=self.models[i].name + ": " + str(most_frequent), fill="red")
+                self.canvas.itemconfig(self.labels[i], text=self.models[i].name + ": " + str(predictions[i]), fill="red")
 
     def input_transform(self):
         """updates self.NN_input and self.blown_NN_input from self.image"""
@@ -234,7 +234,7 @@ model.compile(optimizer='adam',
               loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-nn = NN(name="firstNN", model=model, train_epoch=20)
+nn = NN(name="firstNN", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -249,11 +249,132 @@ model.compile(optimizer='adam',
               loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-nn = NN(name="noHidden", model=model, train_epoch=20)
+nn = NN(name="noHidden", model=model, train_epoch=10)
+gui.add_model(nn)
+
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(1, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+nn = NN(name="singleConnect", model=model, train_epoch=10)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="firstNNw/oDropout", model=model, train_epoch=10)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(10, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="tenConnect", model=model, train_epoch=10)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(1024, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="large2nd", model=model, train_epoch=10)
+gui.add_model(nn)
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dropout(rate=0.5),
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="firstNN100Epoch", model=model, train_epoch=100)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="tenLayers", model=model, train_epoch=10)
+gui.add_model(nn)
+
+# creating the nn
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=train_data[0].shape),  # pure input transform, 2d to 1d
+    keras.layers.Dropout(rate=0.5),
+    keras.layers.Dense(128, activation='sigmoid'),  # layer with 128 nodes
+    keras.layers.Dense(10),  # output layer (1 node = 1 class)
+    keras.layers.Softmax()  # visual presentation
+])
+
+# compiling the nn
+model.compile(optimizer='adam',
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+nn = NN(name="oneEpoch", model=model, train_epoch=1)
 gui.add_model(nn)
 
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-
+print("Accuracies:")
+for i in range(len(gui.models)):
+    print(gui.models[i].name+": " + str(gui.models[i].accuracy))
 
 gui.start()
 
