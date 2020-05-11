@@ -5,8 +5,8 @@
 
 |  Art und Datum | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
 | :---         |     :---:      |    :---:      |    :---:      |    :---:      |
-|1.Meilenstein Di. 05.05 | | x | | |
-|2.Meilenstein Di. 26.05 | x | | | |
+|1.Meilenstein Di. 05.05 | |  | | x |
+|2.Meilenstein Di. 26.05 | | x | | |
 |Präsentation 16.06 | x | | |  |
 |Probeklausur Di. 30.06 | x | | |  |
 
