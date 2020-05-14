@@ -34,6 +34,12 @@
 ### 04.05
 - Fragen Sammeln
 ### 05.05
+- Projektplan überarbeitet
+### 07.05
+- Infos gesammelt und  geteilt
+### 11.05
+- Besprechung von backprobagatin
+### 14.05
 
 
 
