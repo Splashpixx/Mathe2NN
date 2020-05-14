@@ -40,7 +40,7 @@
 ### 11.05
 - Besprechung von backprobagatin
 ### 14.05
-
+- Erste teile der Präsentation vorbereiter und gegliedert
 
 
 ## Basics
