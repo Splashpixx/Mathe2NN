@@ -41,6 +41,13 @@
 - Besprechung von backprobagatin
 ### 14.05
 - Erste teile der Präsentation vorbereiter und gegliedert
+### 18.05
+- Präsentation bearbeitet
+### 21.05
+- Aufteilen der präsentations themen
+### 25.05
+
+## 26.05 Abgabe 11.45
 
 
 ## Basics
