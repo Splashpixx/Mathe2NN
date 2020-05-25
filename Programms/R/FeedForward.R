@@ -5,6 +5,8 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
   if(hiddenLayerSize < 1){
     stop("hiddenLayerSize has to be 1 or greater")
   }
+  me <- NN()
+  
   envi <- environment()
   
   # data fields (private)
@@ -17,22 +19,21 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
   outOfHiddenWeights <- array(data = runif(hiddenLayerSize * outputSize, min = -1), dim = c(outputSize, hiddenLayerSize))
   
   # functions (the equals sign is mandatory)
-  me <- list(
-    envi = envi,
+    me$envi = envi
     
-    getEnvironment = function(){
+    me$getEnvironment = function(){
       return(get("envi",envi))
-    },
+    }
     
-    getInputSize = function(){
+    me$getInputSize = function(){
       return(get("inputSize",envi))
-    },
+    }
     
-    getOutputSize = function(){
+    me$getOutputSize = function(){
       return(get("outputSize",envi))
-    },
+    }
     
-    evaluate = function(input) {
+    me$evaluate = function(input) {
       if(!is.array(input)) stop("input must be an array")
       if(!identical( dim(input) , as.integer(c(inputSize)))) 
         stop(cat("Dimension mismatch in evaluate! Dimension of input needs to be", inputSize, "x 1"))
@@ -45,17 +46,9 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
       output <- activation(outOfHiddenWeights %*% hiddenActivation[numOfHiddenLayers,])
       hiddenActivation <- activation_derivative(hiddenActivation)
       return(array(output))
-    },
+    }
     
-    classify = function(input) {
-      if(!is.array(input)) stop("input must be an array")
-      if(!identical( dim(input) , as.integer(c(inputSize)))) 
-        stop(cat("Dimension mismatch in classify! Dimension of input needs to be", inputSize, "x 1"))
-      result <- me$evaluate(input)
-      return(which.max(result))
-    },
-    
-    train = function(input, output) {
+    me$train = function(input, output) {
       if(!is.array(input)) stop("input must be an array")
       if(!is.array(output)) stop("output must be an array")
       if(!identical( dim(input) , as.integer(c(inputSize)))) 
@@ -96,13 +89,9 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
         }
       }
       hiddenLayerWeights <- hiddenLayerWeights + learningfactor * hiddenGradient
-      
       intoHiddenGradient <- d[1,] %*% t(input)
       intoHiddenWeights <- intoHiddenWeights + learningfactor * intoHiddenGradient
     }
-    
-  )
-  
   assign('this', me, envir = envi)
   class(me) <- append(class(me), 'Perceptron')
   return(me)
