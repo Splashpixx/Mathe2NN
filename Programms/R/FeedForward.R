@@ -10,7 +10,7 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
   # data fields (private)
   inputSize <- pInputSize
   outputSize <- pOutputSize
-  hiddenActivation <- array(dim = c(numOfHiddenLayers - 1, hiddenLayerSize))
+  hiddenActivation <- array(dim = c(numOfHiddenLayers, hiddenLayerSize))
   hiddenLayerWeights <- array(data = runif(hiddenLayerSize^2 * (numOfHiddenLayers - 1), min = -1),
                         dim = c(numOfHiddenLayers -1, hiddenLayerSize, hiddenLayerSize))
   intoHiddenWeights <- array(data = runif(inputSize * hiddenLayerSize, min = -1), dim = c(hiddenLayerSize, inputSize))
@@ -44,7 +44,7 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
       }
       output <- activation(outOfHiddenWeights %*% hiddenActivation[numOfHiddenLayers,])
       hiddenActivation <- activation_derivative(hiddenActivation)
-      return(output)
+      return(array(output))
     },
     
     classify = function(input) {
@@ -56,13 +56,13 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
     },
     
     train = function(input, output) {
-      if(!is.array(inputData)) stop("inputData must be an array")
-      if(!is.array(outputData)) stop("outputData must be an array")
-      if(!identical( dim(inputData) , as.integer(c(inputSize)))) 
-        stop(cat("Dimension mismatch in classify! Dimension of inputData needs to be", inputSize, "x 1"))
-      if(!identical( dim(outputData) , as.integer(c(outputSize)))) 
-        stop(cat("Dimension mismatch in classify! Dimension of inputData needs to be", inputSize, "x 1"))
-      result <- me$evaluate(inputData)
+      if(!is.array(input)) stop("input must be an array")
+      if(!is.array(output)) stop("output must be an array")
+      if(!identical( dim(input) , as.integer(c(inputSize)))) 
+        stop(cat("Dimension mismatch in classify! Dimension of input needs to be", inputSize, "x 1"))
+      if(!identical( dim(output) , as.integer(c(outputSize)))) 
+        stop(cat("Dimension mismatch in classify! Dimension of output needs to be", inputSize, "x 1"))
+      result <- me$evaluate(input)
       
       d_output <- array(dim = outputSize)
       d <- array(dim = c(numOfHiddenLayers, hiddenLayerSize))
@@ -75,7 +75,7 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
 
       # find d for the last hidden layer
       for(hiddenNeuron in 1:hiddenLayerSize){
-        d[numOfHiddenLayers - 1, hiddenNeuron] <- outOfHiddenWeights %*% d_output
+        d[numOfHiddenLayers - 1, hiddenNeuron] <- outOfHiddenWeights[,hiddenNeuron] %*% d_output
       }
       
       #find d for the other layers

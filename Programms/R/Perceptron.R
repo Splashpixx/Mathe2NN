@@ -27,7 +27,7 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
       if(!identical( dim(input) , as.integer(c(inputSize)))) 
         stop(cat("Dimension mismatch in evaluate! Dimension of input needs to be", inputSize, "x 1"))
       output <- weights %*% input
-      return(output)
+      return(array(output))
     },
     
     classify = function(input) {
@@ -39,13 +39,13 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
     },
     
     train = function(input, output) {
-      if(!is.array(inputData)) stop("inputData must be an array")
-      if(!is.array(outputData)) stop("outputData must be an array")
-      if(!identical( dim(inputData) , as.integer(c(inputSize)))) 
-        stop(cat("Dimension mismatch in classify! Dimension of inputData needs to be", inputSize, "x 1"))
-      if(!identical( dim(outputData) , as.integer(c(outputSize)))) 
-        stop(cat("Dimension mismatch in classify! Dimension of inputData needs to be", inputSize, "x 1"))
-      result <- me$evaluate(inputData)
+      if(!is.array(input)) stop("input must be an array")
+      if(!is.array(output)) stop("output must be an array")
+      if(!identical( dim(input) , as.integer(c(inputSize)))) 
+        stop(cat("Dimension mismatch in classify! Dimension of input needs to be", inputSize, "x 1"))
+      if(!identical( dim(output) , as.integer(c(outputSize)))) 
+        stop(cat("Dimension mismatch in classify! Dimension of input needs to be", inputSize, "x 1"))
+      result <- me$evaluate(input)
       
       # Deltaregel
       d <- output - result
