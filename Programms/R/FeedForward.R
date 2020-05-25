@@ -1,10 +1,16 @@
-Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01){
+library(e1071) # contains sigmoid. Please don't ask why it's called that, I don't know
+
+FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 1,
+                       hiddenLayerSize = 100, activation = sigmoid, learningfactor = 0.01){
   envi <- environment()
   
   # data fields (private)
   inputSize <- pInputSize
   outputSize <- pOutputSize
-  weights <- array(data = runif(inputSize * outputSize, min = -1), dim = c(outputSize, inputSize))
+  hiddenLayerWeights <- array(data = runif(hiddenLayerSize^2 * (numOfHiddenLayers - 1), min = -1),
+                        dim = c(numOfHiddenLayers -1, hiddenLayerSize, hiddenLayerSize))
+  intoHiddenWeights <- array(data = runif(inputSize * hiddenLayerSize, min = -1), dim = c(hiddenLayerSize, inputSize))
+  outOfHiddenWeights <- array(data = runif(hiddenLayerSize * outputSize, min = -1), dim = c(outputSize, hiddenLayerSize))
   
   # functions (the equals sign is mandatory)
   me <- list(
@@ -26,7 +32,15 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
       if(!is.array(input)) stop("input must be an array")
       if(!identical( dim(input) , as.integer(c(inputSize)))) 
         stop(cat("Dimension mismatch in evaluate! Dimension of input needs to be", inputSize, "x 1"))
-      output <- weights %*% input
+      output <- intoHiddenWeights %*% input
+      output <- activation(output)
+      if(numOfHiddenLayers > 1){
+        for(layer in 1:numOfHiddenLayers) {
+          output <- hiddenLayerWeights[layer,,] %*% output
+          output <- activation(output)
+        }
+      }
+      output <- outOfHiddenWeights %*% output
       return(output)
     },
     
@@ -48,7 +62,11 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
       result <- me$evaluate(inputData)
       
       # Deltaregel
-      gradient <- array(dim = c(outputSize, inputSize))
+      d_output <- array(dim = outputSize)
+      d <- array(dim = c(numOfHiddenLayers, hiddenLayerSize))
+      output_gradient <- array(dim = c(outputSize, hiddenLayerSize))
+      input_gradient <- array(dim = c(hiddenLayerSize, inputSize))
+      hidden_gradient <- array(dim = c(numOfHiddenLayers -1, hiddenLayerSize, hiddenLayerSize))
       for(outputNeuron in 1:nrow(gradient)){
         for(inputNeuron in 1:ncol(gradient)){
           # \Delta w_ik = e * d_i * a_k
@@ -61,7 +79,7 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
     }
     
   )
-    
+  
   assign('this', me, envir = envi)
   class(me) <- append(class(me), 'Perceptron')
   return(me)
