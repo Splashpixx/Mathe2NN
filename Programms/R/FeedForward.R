@@ -70,10 +70,8 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
       hiddenGradient <- array(dim = c(numOfHiddenLayers -1, hiddenLayerSize, hiddenLayerSize))
       
       # find d for the outputneurons
-      for(outputNeuron in 1:outputSize){
-        d_output[outputNeuron] <- output[outputNeuron] - result[outputNeuron]
-      }
-      d_output <- activation_derivative(d_output)
+      d_output <- activation_derivative(output - result)
+
       # find d for the last hidden layer
       for(hiddenNeuron in 1:hiddenLayerSize){
         d[numOfHiddenLayers - 1, hiddenNeuron] <- outOfHiddenWeights %*% d_output
@@ -89,31 +87,20 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
       }
       d <- activation_derivative(d)
       
-      for(outputNeuron in 1:outputSize){
-        for(hiddenNeuron in 1:hiddenLayerSize){
-          outOfHiddengradient[outputNeuron, hiddenNeuron] <- d_output[outputNeuron] * hiddenActivation[numOfHiddenLayers, hiddenNeuron]
-        }
-      }
+      outOfHiddenGradient <- d_output %*% t(hiddenActivation[numOfHiddenLayers,])
       
       outOfHiddenWeights <- outOfHiddenWeights + learningfactor * outOfHiddenGradient
       
       if(numOfHiddenLayers > 1){
         for(layer in numOfHiddenLayers-1:2){
-          for(laterNeuron in 1:hiddenLayerSize){
-            for(earlierNeuron in 1:hiddenLayerSize){
-              hiddenGradient[layer, laterNeuron, earlierNeuron] <- d[layer, laterNeuron] * hiddenActivation[layer - 1, earlierNeuron] 
-            }
-          }
+          hiddenGradient[layer,] <- d[layer,] %*% t(hiddenActivation[layer -1,])
         }
       }
       
       hiddenLayerWeights <- hiddenLayerWeights + learningfactor * hiddenGradient
       
-      for(hiddenNeuron in 1:hiddenLayerSize){
-        for(inputNeuron in 1:inputSize){
-          intoHiddenGradient[hiddenNeuron, inputNeuron] <- d[1, hiddenNeuron] * input[inputNeuron]
-        }
-      }
+      intoHiddenGradient <- d[1,] %*% t(input)
+      
       intoHiddenWeights <- intoHiddenWeights + learningfactor * intoHiddenGradient
     }
     
