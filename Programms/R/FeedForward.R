@@ -43,6 +43,7 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
         }
       }
       output <- activation(outOfHiddenWeights %*% hiddenActivation[numOfHiddenLayers,])
+      hiddenActivation <- activation_derivative(hiddenActivation)
       return(output)
     },
     
@@ -85,10 +86,8 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
           }
         }
       }
-      d <- activation_derivative(d)
       
       outOfHiddenGradient <- d_output %*% t(hiddenActivation[numOfHiddenLayers,])
-      
       outOfHiddenWeights <- outOfHiddenWeights + learningfactor * outOfHiddenGradient
       
       if(numOfHiddenLayers > 1){
@@ -96,11 +95,9 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
           hiddenGradient[layer,] <- d[layer,] %*% t(hiddenActivation[layer -1,])
         }
       }
-      
       hiddenLayerWeights <- hiddenLayerWeights + learningfactor * hiddenGradient
       
       intoHiddenGradient <- d[1,] %*% t(input)
-      
       intoHiddenWeights <- intoHiddenWeights + learningfactor * intoHiddenGradient
     }
     
