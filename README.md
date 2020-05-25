@@ -5,8 +5,8 @@
 
 |  Art und Datum | Nicht Fertig | In Bearbeitung | Fertig | Abgegeben |
 | :---         |     :---:      |    :---:      |    :---:      |    :---:      |
-|1.Meilenstein Di. 05.05 | | x | | |
-|2.Meilenstein Di. 26.05 | x | | | |
+|1.Meilenstein Di. 05.05 | |  | | x |
+|2.Meilenstein Di. 26.05 | | x | | |
 |Präsentation 16.06 | x | | |  |
 |Probeklausur Di. 30.06 | x | | |  |
 
@@ -34,7 +34,20 @@
 ### 04.05
 - Fragen Sammeln
 ### 05.05
+- Projektplan überarbeitet
+### 07.05
+- Infos gesammelt und  geteilt
+### 11.05
+- Besprechung von backprobagatin
+### 14.05
+- Erste teile der Präsentation vorbereiter und gegliedert
+### 18.05
+- Präsentation bearbeitet
+### 21.05
+- Aufteilen der präsentations themen
+### 25.05
 
+### 26.05 Abgabe 11.45
 
 
 ## Basics
