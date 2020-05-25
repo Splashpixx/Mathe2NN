@@ -49,15 +49,15 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
       
       # Deltaregel
       gradient <- array(dim = c(outputSize, inputSize))
+      d <- output - result
       for(outputNeuron in 1:nrow(gradient)){
         for(inputNeuron in 1:ncol(gradient)){
           # \Delta w_ik = e * d_i * a_k
           # e is out of loop
-          d <- output[outputNeuron] - result[outputNeuron]
-          gradient[outputNeuron, inputNeuron] <- d * input[inputNeuron]
+          gradient[outputNeuron, inputNeuron] <- d[outputNeuron] * input[inputNeuron]
         }
       }
-      weights <- weights + learnfactor * gradient
+      weights <- weights + learningfactor * gradient
     }
     
   )
