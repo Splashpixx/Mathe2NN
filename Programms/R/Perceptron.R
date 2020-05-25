@@ -48,15 +48,8 @@ Perceptron <- function(pInputSize = 784, pOutputSize = 10, learningfactor = 0.01
       result <- me$evaluate(inputData)
       
       # Deltaregel
-      gradient <- array(dim = c(outputSize, inputSize))
       d <- output - result
-      for(outputNeuron in 1:nrow(gradient)){
-        for(inputNeuron in 1:ncol(gradient)){
-          # \Delta w_ik = e * d_i * a_k
-          # e is out of loop
-          gradient[outputNeuron, inputNeuron] <- d[outputNeuron] * input[inputNeuron]
-        }
-      }
+      gradient <- d %*% t(input) # t() transposes a matrix
       weights <- weights + learningfactor * gradient
     }
     

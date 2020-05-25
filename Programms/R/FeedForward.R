@@ -114,10 +114,7 @@ FeedForward <- function(pInputSize = 784, pOutputSize = 10, numOfHiddenLayers = 
           intoHiddenGradient[hiddenNeuron, inputNeuron] <- d[1, hiddenNeuron] * input[inputNeuron]
         }
       }
-      
       intoHiddenWeights <- intoHiddenWeights + learningfactor * intoHiddenGradient
-      
-      
     }
     
   )
