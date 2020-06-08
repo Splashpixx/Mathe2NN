@@ -120,17 +120,17 @@ nn = TensorFlowNN(name="oneEpoch", model=model, train_epoch=1)
 gui.add_model(nn)
 
 # creating my perceptron
-nn = Perceptron()
-gui.add_model(nn)
-
-nn = Perceptron(name="MyPerceptron1Epoch", train_epoch=1)
-gui.add_model(nn)
-
-nn = Perceptron(name="UntrainedPerceptron", train_epoch=0)
-gui.add_model(nn)
-
-# nn = FeedForward()
+# nn = Perceptron()
 # gui.add_model(nn)
+
+# nn = Perceptron(name="MyPerceptron1Epoch", train_epoch=1)
+# gui.add_model(nn)
+
+# nn = Perceptron(name="UntrainedPerceptron", train_epoch=0)
+# gui.add_model(nn)
+
+nn = FeedForward()
+gui.add_model(nn)
 
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 print("Accuracies:")
