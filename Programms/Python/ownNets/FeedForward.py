@@ -16,7 +16,7 @@ def d_sigmoid(x):
 class FeedForward(MyNeuronalNet):
     def __init__(self, name="MyFeedForward", input_size=784, output_size=10, num_of_hidden_layers=1,
                  hidden_layer_size=100,
-                 activation=sigmoid, activation_derivative=d_sigmoid, learning_speed=0.01):
+                 activation=sigmoid, activation_derivative=d_sigmoid, learning_speed=0.001):
         super().__init__(name, input_size, output_size, learning_speed)
         self.hidden_layer_activation = np.zeros((num_of_hidden_layers, hidden_layer_size))
         self.hidden_layer_weights = np.random.rand(num_of_hidden_layers - 1, hidden_layer_size,

@@ -4,7 +4,7 @@ from ownNets.NN import MyNeuronalNet, flatten_input
 
 
 class Perceptron(MyNeuronalNet):
-    def __init__(self, name="MyPerceptron", input_size=784, output_size=10, learning_speed=0.01, train_epoch=10):
+    def __init__(self, name="MyPerceptron", input_size=784, output_size=10, learning_speed=0.001, train_epoch=10):
         super().__init__(name, input_size, output_size, learning_speed, train_epoch)
         self.weights = np.random.rand(output_size, input_size)
 

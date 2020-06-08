@@ -13,7 +13,7 @@ def flatten_input(array):
 
 
 class MyNeuronalNet(NN):
-    def __init__(self, name="InvalidMyNet", input_size=784, output_size=10, learning_speed=0.01, train_epoch=10):
+    def __init__(self, name="InvalidMyNet", input_size=784, output_size=10, learning_speed=0.001, train_epoch=10):
         super().__init__(name, train_epoch)
         self.output_size = output_size
         self.input_size = input_size
