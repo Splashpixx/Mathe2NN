@@ -46,6 +46,23 @@ class FeedForward(MyNeuronalNet):
         # find delta for output neurons
         delta_output = self.activation_derivative(output_data - result)
 
+        out_of_hidden_gradient = delta_output * self.hidden_layer_activation[len(self.hidden_layer_activation) - 1]
+        self.out_of_hidden_weights += self.learning_speed * out_of_hidden_gradient
+
         # find d for the last hidden layer
         for hidden_neuron in range(self.hidden_layer_size):
-            delta[self.num_of_hidden_layers - 2, hidden_neuron] = self.out_of_hidden_weights @ delta_output  # to do
+            delta[self.num_of_hidden_layers - 2, hidden_neuron] = \
+                self.out_of_hidden_weights[:, hidden_neuron] @ delta_output
+
+        # find d for the other layers
+        if self.num_of_hidden_layers > 1:
+            for layer in reversed(range(0, self.num_of_hidden_layers-2)):
+                for neuron in range(self.hidden_layer_size):
+                    delta[layer, neuron] = self.hidden_layer_weights[layer + 1] @ delta[layer + 1]
+
+            for layer in reversed(range(self.num_of_hidden_layers-1, 1)):
+                layer_gradient = delta[layer] * self.hidden_layer_activation[layer - 1]
+                self.hidden_layer_weights[layer] += self.learning_speed * layer_gradient
+
+        into_hidden_gradient = delta[0] * input
+        self.into_hidden_weights += self.learning_speed * into_hidden_gradient
