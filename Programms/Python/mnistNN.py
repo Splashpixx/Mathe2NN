@@ -1,8 +1,11 @@
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 import sys
 from Gui import Gui
-from NN_wrapper import NN
+from NN_wrapper import NN, TensorFlowNN
+from ownNets.FeedForward import FeedForward
+from ownNets.Perceptron import Perceptron
 
 print(sys.version)
 print(tf.__version__)
@@ -18,7 +21,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="firstNN", model=model, train_epoch=10)
+nn = TensorFlowNN(name="firstNN", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -28,7 +31,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="noHidden", model=model, train_epoch=10)
+nn = TensorFlowNN(name="noHidden", model=model, train_epoch=10)
 gui.add_model(nn)
 
 model = keras.Sequential([
@@ -37,7 +40,7 @@ model = keras.Sequential([
     keras.layers.Dense(10),  # output layer (1 node = 1 class)
     keras.layers.Softmax()  # visual presentation
 ])
-nn = NN(name="singleConnect", model=model, train_epoch=10)
+nn = TensorFlowNN(name="singleConnect", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -48,7 +51,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="firstNNnoDropout", model=model, train_epoch=10)
+nn = TensorFlowNN(name="firstNNnoDropout", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -59,7 +62,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="tenConnect", model=model, train_epoch=10)
+nn = TensorFlowNN(name="tenConnect", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -70,7 +73,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="large2nd", model=model, train_epoch=10)
+nn = TensorFlowNN(name="large2nd", model=model, train_epoch=10)
 gui.add_model(nn)
 # creating the nn
 model = keras.Sequential([
@@ -81,7 +84,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="firstNN100Epoch", model=model, train_epoch=100)
+nn = TensorFlowNN(name="firstNN100Epoch", model=model, train_epoch=100)
 gui.add_model(nn)
 
 # creating the nn
@@ -101,7 +104,7 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="tenLayers", model=model, train_epoch=10)
+nn = TensorFlowNN(name="tenLayers", model=model, train_epoch=10)
 gui.add_model(nn)
 
 # creating the nn
@@ -113,8 +116,21 @@ model = keras.Sequential([
     keras.layers.Softmax()  # visual presentation
 ])
 
-nn = NN(name="oneEpoch", model=model, train_epoch=1)
+nn = TensorFlowNN(name="oneEpoch", model=model, train_epoch=1)
 gui.add_model(nn)
+
+# creating my perceptron
+nn = Perceptron()
+gui.add_model(nn)
+
+nn = Perceptron(name="MyPerceptron1Epoch", train_epoch=1)
+gui.add_model(nn)
+
+nn = Perceptron(name="UntrainedPerceptron", train_epoch=0)
+gui.add_model(nn)
+
+# nn = FeedForward()
+# gui.add_model(nn)
 
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 print("Accuracies:")

@@ -35,6 +35,7 @@ class Gui:
 
     def add_model(self, model):
         self.models.append(model)
+        model.train()
         self.canvas.delete("gui")
         self.labels = []
         for i in range(len(self.models)):

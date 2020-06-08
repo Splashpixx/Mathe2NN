@@ -17,25 +17,27 @@ test_data = test_data / 255.0
 
 
 class NN:
-    def __init__(self, model, name="default_name", train_epoch=20, optimizer='adam',
+    def __init__(self, name="default_name", train_epoch=10):
+        self.train_epoch = train_epoch
+        self.name = name
+
+    def predict(self, array):
+        raise NotImplementedError
+
+    def train(self):
+        raise NotImplementedError
+
+
+class TensorFlowNN(NN):
+    def __init__(self, model, name="default_name", train_epoch=10, optimizer='adam',
                  loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy']):
+        super().__init__(name, train_epoch)
         self.metrics = metrics
         self.loss = loss
         self.optimizer = optimizer
-        self.name = name
-        self.train_epoch = train_epoch
+        self.model = model
         self.training_time = time.time()
-        if path.isdir(str(save_path + name)):
-            print("Loaded NN " + name + " from memory, not retrained")
-            self.model = tf.keras.models.load_model(save_path + name)
-            self.training_time = None
-        else:
-            self.model = model
-            self.train()
-            self.training_time = time.time() - self.training_time
-            model.save(str(save_path + name))
-        model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-        loss, self.accuracy = model.evaluate(test_data, test_labels, verbose=2)
+        self.accuracy = 0
 
     def predict(self, array):
         fake_batch = np.array([array])
@@ -43,4 +45,14 @@ class NN:
         return np.argmax(prediction)
 
     def train(self):
-        self.model.fit(train_data, train_labels, epochs=self.train_epoch)  # epochs = number of iterations
+        if path.isdir(str(save_path + self.name)):
+            print("Loaded NN " + self.name + " from memory, not retrained")
+            self.model = tf.keras.models.load_model(save_path + self.name)
+            self.training_time = None
+        else:
+            self.training_time = time.time()
+            self.model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
+            self.model.fit(train_data, train_labels, epochs=self.train_epoch)  # epochs = number of iterations
+            self.training_time = time.time() - self.training_time
+            self.model.save(str(save_path + self.name))
+        loss, self.accuracy = self.model.evaluate(test_data, test_labels, verbose=2)

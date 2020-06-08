@@ -14,10 +14,9 @@ def d_sigmoid(x):
 
 
 class FeedForward(MyNeuronalNet):
-    def __init__(self, input_size=784, output_size=10, num_of_hidden_layers=1,
-                 hidden_layer_size=100, activation=sigmoid, activation_derivative=d_sigmoid, learning_speed=0.01):
-        self.input_size = input_size
-        self.output_size = output_size
+    def __init__(self, name="MyFeedForward", input_size=784, output_size=10, num_of_hidden_layers=1, hidden_layer_size=100,
+                 activation=sigmoid, activation_derivative=d_sigmoid, learning_speed=0.01):
+        super().__init__(name, input_size, output_size, learning_speed)
         self.hidden_layer_activation = np.zeros((num_of_hidden_layers, hidden_layer_size))
         self.hidden_layer_weights = np.random.rand(num_of_hidden_layers - 1, hidden_layer_size,
                                                    hidden_layer_size) * 2 - 1
@@ -25,7 +24,6 @@ class FeedForward(MyNeuronalNet):
         self.out_of_hidden_weights = np.random.rand(output_size, hidden_layer_size) * 2 - 1
         self.activation = activation
         self.activation_derivative = activation_derivative
-        self.learning_speed = learning_speed
         self.hidden_layer_size = hidden_layer_size
         self.num_of_hidden_layers = num_of_hidden_layers
 
@@ -38,7 +36,7 @@ class FeedForward(MyNeuronalNet):
         self.hidden_layer_activation = self.activation_derivative(self.hidden_layer_activation)
         return output
 
-    def train(self, input_data, output_data):
+    def train_once(self, input_data, output_data):
         result = self.evaluate(input_data)
         # Backpropagation
         delta = np.zeros((self.num_of_hidden_layers, self.hidden_layer_size))
